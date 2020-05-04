@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style type='text/css'>
+	.embeddedServiceHelpButton .helpButton .uiButton {
+		background-color: #005290;
+		font-family: "Arial", sans-serif;
+	}
+	.embeddedServiceHelpButton .helpButton .uiButton:focus {
+		outline: 1px solid #005290;
+	}
+</style>
+</head>
+
+<body>
+ <b>Embedded Service Page</b> 
+<script type='text/javascript' src='https://service.force.com/embeddedservice/5.0/esw.min.js'></script>
+<script type='text/javascript'>
+	var initESW = function(gslbBaseURL) {
+   		embedded_svc.addEventHandler("onHelpButtonClick", function(data) {
+   			//Initialize vars to be prepopulated, can remove declaration of _satellite/subcookiejar once the vars exist on the page
+			var cc3Ml3ButtonId = "{!$Setup.ccMl3ButtonId}";
+			var fullURL,  customerChannel, customerId, customerUserName, 
+			customerEmail, siteRootURL, isCCUS,  isCCLP, 
+			isCCSBLP, isCCBLP, supportDomain, liveEngageDataElement, 
+			mobilePhone, busOrgId, myL3userName;
+			var NOT_PROVIDED = "Not Provided";
+			//If actually on external page and has access to session variables/cookies, dynamically grab fields
+			if(typeof _satellite !== 'undefined') {
+	   			//Pull the values that will be prepopulated from the session variable
+	   			//customerChannel = _satellite.getVar("Customer Channel");
+	   			//customerId = _satellite.getVar("Customer Id");
+	   			//customerUserName = _satellite.getVar("Customer User Name");
+	   			//customerEmail = _satellite.getVar("Customer Email");
+	   			siteRootURL = _satellite.getVar("Site Root URL");
+	   			isCCUS = _satellite.getVar("is Control Center US Site") == "true";
+	   			isCCLP = _satellite.getVar("is Control Center Login Page") == "true";
+	   			isCCSBLP = _satellite.getVar("is Control Center Small Business Login Page") == "true";
+	   			isCCBLP = _satellite.getVar("is Control Center Business Login Page") == "true";
+	   			liveEngageDataElement = _satellite.getVar("digitalData.page.liveEngage");
+	   		}
+
+	   		//This means we are on CC page
+	   		if(typeof subcookiejar !== 'undefined') {
+	   			supportDomain = subcookiejar.fetch("profile_cookie", "supportDomain");
+	   		}
+
+	   		if (typeof document !== 'undefined') {
+	   			fullURL = document.URL;
+	   		}
+
+	   		//This means we are on MyL3 page
+	   		if(liveEngageDataElement) {
+	   			customerId = (typeof liveEngageDataElement.enterpriseId !== 'undefined' && liveEngageDataElement.enterpriseId) ? liveEngageDataElement.enterpriseId : "";
+	   			busOrgId = (typeof liveEngageDataElement.businessOrgID !== 'undefined' && liveEngageDataElement.businessOrgID) ? liveEngageDataElement.businessOrgID : "";
+	   			mobilePhone = (typeof liveEngageDataElement.contactNumber !== 'undefined' && liveEngageDataElement.contactNumber) ? liveEngageDataElement.contactNumber : "";
+				
+				if(typeof liveEngageDataElement.userName !== 'undefined' && liveEngageDataElement.userName) {
+					customerUserName = liveEngageDataElement.userName;
+				} else if (typeof liveEngageDataElement.ssoID !== 'undefined' && liveEngageDataElement.ssoID) {
+					customerUserName = liveEngageDataElement.ssoID;
+				} else {
+					customerUserName = "";
+				}				
+
+				if(typeof liveEngageDataElement.domain !== 'undefined' && liveEngageDataElement.domain) {
+					customerChannel = liveEngageDataElement.domain;
+				} else if (typeof liveEngageDataElement.channel !== 'undefined' && liveEngageDataElement.channel) {
+					customerChannel = liveEngageDataElement.channel;
+				} else {
+					customerChannel = "";
+				}
+
+				if(typeof liveEngageDataElement.email !== 'undefined' && liveEngageDataElement.email) {
+					customerEmail = liveEngageDataElement.email;
+				} else if (typeof liveEngageDataElement.ssoID !== 'undefined' && liveEngageDataElement.ssoID) {
+					customerEmail = liveEngageDataElement.ssoID;
+				} else {
+					customerEmail = "";
+				}
+	   		}
+
+	   		//Ensure vars are set
+			customerChannel = (customerChannel == null || customerChannel.includes(NOT_PROVIDED)) ? "" : customerChannel;
+			customerId = (customerId == null ||  customerId.includes(NOT_PROVIDED)) ? "" : customerId;
+			customerUserName = (customerUserName == null ||  customerUserName.includes(NOT_PROVIDED)) ? "" : customerUserName;
+			customerEmail = (customerEmail == null ||  customerEmail.includes(NOT_PROVIDED)) ? "" : customerEmail;
+	   		siteRootURL = (siteRootURL == null ||  siteRootURL.includes(NOT_PROVIDED)) ? "" : siteRootURL;
+	   		supportDomain = (supportDomain == null) ? "" : supportDomain;
+	   		mobilePhone = (mobilePhone == null ||  mobilePhone.includes(NOT_PROVIDED)) ? "" : mobilePhone;
+	   		busOrgId = (busOrgId == null ||  busOrgId.includes(NOT_PROVIDED)) ? "" : busOrgId;
+	   		myL3userName = (myL3userName == null ||  myL3userName.includes(NOT_PROVIDED)) ? "" : myL3userName;
+
+
+	   		//Pass info from external site into Chat Transcript object
+			embedded_svc.settings.extraPrechatFormDetails = [{
+				"label": "Customer Channel",
+				"value": customerChannel,
+				"transcriptFields": ['Customer_Channel__c'],
+				"displayToAgent": true
+			}, {
+				"label": "Customer Id",
+				"value": customerId,
+				"transcriptFields": ['Enterprise_Id__c'],
+				"displayToAgent": true
+			}, {
+				"label": "Customer User Name",
+				"transcriptFields": ['Customer_User_Name__c'],
+				"value": customerUserName,
+				"displayToAgent": true
+			}, {
+				"label": "Passed Email",
+				"transcriptFields": ['Passed_Email__c'],
+				"value": customerEmail,
+				"displayToAgent": true
+			},{
+				"label": "Referring Site",
+				"transcriptFields": ['ReferrerUri'],
+				"value": fullURL,
+				"displayToAgent": true
+			}, {
+				"label": "Site Root URL",
+				"transcriptFields": ['Site_Root_URL__c'],
+				"value": siteRootURL,
+				"displayToAgent": true
+			}, {
+				"label": "Control Center US?",
+				"transcriptFields": ['Control_Center_US__c'],
+				"value": isCCUS,
+				"displayToAgent": true
+			}, {
+				"label": "Control Center Login Page?",
+				"transcriptFields": ['Control_Center_Login_Page__c'],
+				"value": isCCLP,
+				"displayToAgent": true
+			}, {
+				"label": "CC Small Business Login Page?",
+				"transcriptFields": ['CC_Small_Business_Login_Page__c'],
+				"value": isCCSBLP,
+				"displayToAgent": true
+			}, {
+				"label": "CC Business Login Page?",
+				"transcriptFields": ['CC_Business_Login_Page__c'],
+				"value": isCCBLP,
+				"displayToAgent": true
+			}, {
+				"label": "Support Domain",
+				"transcriptFields": ['Support_Domain__c'],
+				"value": supportDomain,
+				"displayToAgent": true
+			}, {
+				"label": "MyL3 User Name",
+				"transcriptFields": ['MyL3_User_Name__c'],
+				"value": myL3userName,
+				"displayToAgent": true
+			}, {
+				"label": "Business Org Id",
+				"transcriptFields": ['Business_Org_Id__c'],
+				"value": busOrgId,
+				"displayToAgent": true
+			}, {
+				"label": "Subject",
+				"transcriptFields": [],
+				"value": "To be updated",
+				"displayToAgent": false
+			}, {
+				"label": "Mobile Phone",
+				"transcriptFields": ['Mobile_Phone__c'],
+				"displayToAgent": false
+			}, {
+				"label": "First Name",
+				"transcriptFields": ['First_Name__c'],
+				"displayToAgent": false
+			}, {
+				"label": "Last Name",
+				"transcriptFields": ['Last_Name__c'],
+				"displayToAgent": false
+			}, {
+				"label": "Email",
+				"transcriptFields": ['Email__c'],
+				"displayToAgent": false
+			}];
+
+			//Used to match info provided with existing Contact in SFDC
+			embedded_svc.settings.extraPrechatInfo = [{
+				"entityName": "Contact",
+				"entityFieldMaps": [{
+					"doCreate": false,
+					"dofind": true,
+					"fieldName": "LastName",
+					"isExactMatch": true,
+					"label": "Last Name"
+				}, {
+					"doCreate": false,
+					"dofind": true,
+					"fieldName": "Email",
+					"isExactMatch": true,
+					"label": "Email"
+				}, {
+					"doCreate": false,
+					"dofind": true,
+					"fieldName": "MobilePhone",
+					"isExactMatch": true,
+					"label": "Mobile"
+				}]
+			}, {
+				"entityName": "Case",                                                 
+				"entityFieldMaps": [{
+					"doCreate": true,
+					"dofind": false,
+					"fieldName": "Subject",
+					"isExactMatch": false,
+					"label": "Subject"
+				}]                                                 
+	        }];
+
+			//Set the value of the fields in the prechat form
+			embedded_svc.settings.prepopulatedPrechatFields = {
+				Email: customerEmail,
+				MobilePhone: mobilePhone
+			};
+   		});
+
+		embedded_svc.settings.displayHelpButton = true;
+		embedded_svc.settings.language = '';
+		embedded_svc.settings.loadingText = 'Please wait...';
+
+		embedded_svc.settings.enabledFeatures = ['LiveAgent'];
+		embedded_svc.settings.entryFeature = 'LiveAgent';
+
+		embedded_svc.init(
+			'https://ctl-enterprise--decapril.my.salesforce.com',
+			'https://decapril-ctl-enterprise.cs14.force.com/InternalChat',
+			gslbBaseURL,
+			'00Dc0000003ldMi',
+			'Control_Center_MyL3',
+			{
+				baseLiveAgentContentURL: 'https://c.la1-c1cs-ord.salesforceliveagent.com/content',
+				deploymentId: '5724T000000CvfQ',
+				buttonId: '5734T000000Cw9w',
+				baseLiveAgentURL: 'https://d.la1-c1cs-ord.salesforceliveagent.com/chat',
+				eswLiveAgentDevName: 'EmbeddedServiceLiveAgent_Parent04I4T0000008cvgUAA_170ce56407d',
+				isOfflineSupportEnabled: true
+			}
+		);
+	};
+
+	if (!window.embedded_svc) {
+		var s = document.createElement('script');
+		s.setAttribute('src', 'https://ctl-enterprise--digeng.my.salesforce.com/embeddedservice/5.0/esw.min.js');
+		s.onload = function() {
+			initESW(null);
+		};
+		document.body.appendChild(s);
+	} else {
+		initESW('https://service.force.com');
+	}
+</script>
+</body>
+</html>
