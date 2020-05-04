@@ -15,7 +15,7 @@
 </head>
 
 <body>
- <b>Embedded Service Page version 5 now</b> 
+ <b>Embedded Service Page version 6 now</b> 
 
 <script type='text/javascript' src='https://service.force.com/embeddedservice/5.0/esw.min.js'></script>
 <script type='text/javascript'>
@@ -24,7 +24,7 @@
 		embedded_svc.settings.language = ''; //For example, enter 'en' or 'en-US'
 		
 		console.log("add variable here");
-		var cc3Ml3ButtonId = "{!$Setup.ccMl3ButtonId}";
+		var cc3Ml3ButtonId = "{!$Setup.ButtonIDs__c.ccMl3__c}";
 		console.log(cc3Ml3ButtonId);
 		
 
