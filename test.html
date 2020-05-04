@@ -18,6 +18,7 @@
 <script type='text/javascript' src='https://service.force.com/embeddedservice/5.0/esw.min.js'></script>
 <script type='text/javascript'>
 	var initESW = function(gslbBaseURL) {
+		console.out("hello")
    		embedded_svc.addEventHandler("onHelpButtonClick", function(data) {
    			//Initialize vars to be prepopulated, can remove declaration of _satellite/subcookiejar once the vars exist on the page
 			var cc3Ml3ButtonId = "{!$Setup.ccMl3ButtonId}";
