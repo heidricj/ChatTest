@@ -19,14 +19,9 @@
 
 <script type='text/javascript' src='https://service.force.com/embeddedservice/5.0/esw.min.js'></script>
 <script type='text/javascript'>
-	var initESW = function(gslbBaseURL) {
+var initESW = function(gslbBaseURL) {
 		embedded_svc.settings.displayHelpButton = true; //Or false
 		embedded_svc.settings.language = ''; //For example, enter 'en' or 'en-US'
-		
-		console.log("add variable here");
-		var cc3Ml3ButtonId = "{!$Setup.ButtonIDs__c.ccMl3__c}";
-		console.log(cc3Ml3ButtonId);
-		
 
 		//embedded_svc.settings.defaultMinimizedText = '...'; //(Defaults to Chat with an Expert)
 		//embedded_svc.settings.disabledMinimizedText = '...'; //(Defaults to Agent Offline)
@@ -47,25 +42,25 @@
 		embedded_svc.settings.entryFeature = 'LiveAgent';
 
 		embedded_svc.init(
-			'https://ctl-enterprise--decapril.my.salesforce.com',
-			'https://decapril-ctl-enterprise.cs14.force.com/InternalChat',
+			'https://ctl-enterprise--test1.my.salesforce.com',
+			'https://test1-ctl-enterprise.cs195.force.com/InternalChat',
 			gslbBaseURL,
-			'00Dc0000003ldMi',
-			'Control_Center_MyL3',
+			'00D020000004aW4',
+			'EDGE_Support_Get_Use',
 			{
-				baseLiveAgentContentURL: 'https://c.la1-c1cs-ord.salesforceliveagent.com/content',
-				deploymentId: '5724T000000CvfQ',
-				buttonId: '5734T000000Cw9w',
-				baseLiveAgentURL: 'https://d.la1-c1cs-ord.salesforceliveagent.com/chat',
-				eswLiveAgentDevName: 'EmbeddedServiceLiveAgent_Parent04I4T0000008cvgUAA_170ce56407d',
-				isOfflineSupportEnabled: true
+				baseLiveAgentContentURL: 'https://c.la2-c1cs-ia4.salesforceliveagent.com/content',
+				deploymentId: '5724T000000Cvae',
+				buttonId: '573020000004CDr',
+				baseLiveAgentURL: 'https://d.la2-c1cs-ia4.salesforceliveagent.com/chat',
+				eswLiveAgentDevName: 'EmbeddedServiceLiveAgent_Parent04I02000000004wEAA_17726eadd93',
+				isOfflineSupportEnabled: false
 			}
 		);
 	};
 
 	if (!window.embedded_svc) {
 		var s = document.createElement('script');
-		s.setAttribute('src', 'https://ctl-enterprise--decapril.my.salesforce.com/embeddedservice/5.0/esw.min.js');
+		s.setAttribute('src', 'https://ctl-enterprise--test1.my.salesforce.com/embeddedservice/5.0/esw.min.js');
 		s.onload = function() {
 			initESW(null);
 		};
